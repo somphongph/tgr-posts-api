@@ -7,3 +7,7 @@ redis:
   pass: ""
   shortCache: 60
   longCache: 1800
+
+mongo:
+  connectionString: ""
+  databaseName: ""
