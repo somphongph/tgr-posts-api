@@ -11,7 +11,6 @@ func NewHandler(cache cache.Cached) *Handler {
 }
 
 type Post struct {
-	Brand    string `json:"brand"`
-	Model    string `json:"model"`
-	SubModel string `json:"subModel"`
+	Title   string `json:"title"`
+	Caption string `json:"caption"`
 }
