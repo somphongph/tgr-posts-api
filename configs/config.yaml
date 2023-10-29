@@ -1,0 +1,9 @@
+app:
+  name: "tgr-posts-api"
+  port: "8080"
+
+redis:
+  host: ""
+  pass: ""
+  shortCache: 60
+  longCache: 1800
