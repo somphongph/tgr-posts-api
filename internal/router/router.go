@@ -32,13 +32,13 @@ func InitRouter(e *echo.Echo) {
 	// }
 	// defer db.Close()
 
-	apiV2 := e.Group("/v1")
+	api := e.Group("/v1")
 
 	// Validate
-	postHandler := posts.NewHandler(cache.InitCache())
-	post := apiV2.Group("/posts")
+	p := posts.NewHandler(cache.InitCache())
+	pApi := api.Group("/posts")
 	{
-		post.GET("", postHandler.GetPostHandler)
+		pApi.GET("", p.GetPostHandler)
 	}
 
 	// Graceful Shutdown

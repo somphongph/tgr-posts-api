@@ -1,17 +1,12 @@
 package posts
 
-type cached interface {
-	GetCache(string) (string, error)
-	SetCache(string, interface{}, int) error
-	SetShortCache(string, interface{}) error
-	SetLongCache(string, interface{}) error
-}
+import "tgr-posts-api/internal/cache"
 
 type Handler struct {
-	cache cached
+	cache cache.Cached
 }
 
-func NewHandler(cache cached) *Handler {
+func NewHandler(cache cache.Cached) *Handler {
 	return &Handler{cache: cache}
 }
 

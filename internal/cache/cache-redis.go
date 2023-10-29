@@ -8,6 +8,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+type Cached interface {
+	GetCache(string) (string, error)
+	SetCache(string, interface{}, int) error
+	SetShortCache(string, interface{}) error
+	SetLongCache(string, interface{}) error
+}
+
 type RedisStore struct {
 	*redis.Client
 }
