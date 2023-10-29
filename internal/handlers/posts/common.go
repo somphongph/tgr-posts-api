@@ -1,6 +1,6 @@
 package posts
 
-import "tgr-posts-api/internal/cache"
+import "tgr-posts-api/internal/repositories/cache"
 
 type Handler struct {
 	cache cache.Cached

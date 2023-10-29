@@ -3,8 +3,8 @@ package router
 import (
 	"context"
 	"fmt"
-	"tgr-posts-api/internal/cache"
 	"tgr-posts-api/internal/handlers/posts"
+	"tgr-posts-api/internal/repositories/cache"
 
 	"net/http"
 	"os"
