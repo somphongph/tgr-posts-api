@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"tgr-posts-api/internal/handlers/posts"
-	"tgr-posts-api/internal/repositories/cache"
+	"tgr-posts-api/internal/store/cache"
 
 	"net/http"
 	"os"
