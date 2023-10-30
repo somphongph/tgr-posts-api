@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *Handler) CreatePostHandler(c echo.Context) error {
+func (h *Handler) AddPostHandler(c echo.Context) error {
 	p := Post{}
 
 	// Binding
