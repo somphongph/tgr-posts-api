@@ -9,5 +9,5 @@ redis:
   longCache: 1800
 
 mongo:
-  connectionString: ""
-  databaseName: ""
+  connectionString: "mongodb://tgrapp:VGh1bmRlckAuNjIwMzAzVGh1bmRlckAuNjIwMzAz@10.148.0.4:1301"
+  databaseName: "tgr_posts"

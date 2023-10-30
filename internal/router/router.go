@@ -39,6 +39,7 @@ func InitRouter(e *echo.Echo) {
 	pApi := api.Group("/posts")
 	{
 		pApi.GET("", p.GetPostHandler)
+		pApi.POST("", p.CreatePostHandler)
 	}
 
 	// Graceful Shutdown
