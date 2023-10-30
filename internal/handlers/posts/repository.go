@@ -10,6 +10,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+type storer interface {
+	GetById(string) (Post, error)
+	GetAll() ([]Post, error)
+	Add(*Post) error
+	Update(*Post) error
+	Delete(string) error
+}
+
 type MongoDBStore struct {
 	*mongo.Collection
 }
