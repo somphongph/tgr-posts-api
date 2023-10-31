@@ -11,19 +11,19 @@ import (
 )
 
 func (h *Handler) AddPostHandler(c echo.Context) error {
-	// p := Post{}
+	p := Post{}
 
 	// Binding
-	// if err := c.Bind(&p); err != nil {
-	// 	res := responses.ResponseError()
-	// 	return c.JSON(http.StatusBadRequest, res)
-	// }
+	if err := c.Bind(&p); err != nil {
+		res := responses.ResponseError()
+		return c.JSON(http.StatusBadRequest, res)
+	}
 
 	// Bind object
 	post := &Post{
 		Id:        primitive.NewObjectID(),
-		Title:     "Title",
-		Caption:   "Caption",
+		Title:     p.Title,
+		Caption:   p.Caption,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
