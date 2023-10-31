@@ -35,7 +35,7 @@ func InitRouter(e *echo.Echo) {
 	api := e.Group("/v1")
 
 	// Validate
-	p := posts.NewHandler(cache.InitCache())
+	p := posts.NewHandler(posts.InitMongoDBStore(), cache.InitCache())
 	pApi := api.Group("/posts")
 	{
 		pApi.GET("", p.GetPostHandler)

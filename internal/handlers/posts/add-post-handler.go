@@ -1,6 +1,7 @@
 package posts
 
 import (
+	"fmt"
 	"net/http"
 	"tgr-posts-api/internal/responses"
 	"time"
@@ -10,13 +11,13 @@ import (
 )
 
 func (h *Handler) AddPostHandler(c echo.Context) error {
-	p := Post{}
+	// p := Post{}
 
 	// Binding
-	if err := c.Bind(&p); err != nil {
-		res := responses.ResponseError()
-		return c.JSON(http.StatusBadRequest, res)
-	}
+	// if err := c.Bind(&p); err != nil {
+	// 	res := responses.ResponseError()
+	// 	return c.JSON(http.StatusBadRequest, res)
+	// }
 
 	// Bind object
 	post := &Post{
@@ -26,6 +27,8 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
+
+	fmt.Println(post)
 
 	err := h.store.Add(post)
 	if err != nil {

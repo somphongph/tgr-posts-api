@@ -12,8 +12,8 @@ type Handler struct {
 	cache cache.Cached
 }
 
-func NewHandler(cache cache.Cached) *Handler {
-	return &Handler{cache: cache}
+func NewHandler(store storer, cache cache.Cached) *Handler {
+	return &Handler{store: store, cache: cache}
 }
 
 type Post struct {

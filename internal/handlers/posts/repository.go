@@ -22,7 +22,7 @@ type MongoDBStore struct {
 	*mongo.Collection
 }
 
-func NewMongoDBStore() *MongoDBStore {
+func InitMongoDBStore() *MongoDBStore {
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(viper.GetString("mongo.connectionString")))
 	if err != nil {
 		panic("failed to connect database")
