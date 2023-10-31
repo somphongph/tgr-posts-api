@@ -10,24 +10,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type storer interface {
-	GetById(string) (Post, error)
-	GetAll() ([]Post, error)
-	Add(*Post) error
-	Update(*Post) error
-	Delete(string) error
-}
-
 type MongoDBStore struct {
 	*mongo.Collection
 }
 
 func InitMongoDBStore() *MongoDBStore {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(viper.GetString("mongo.connectionString")))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(viper.GetString("MONGO_CONNECTION")))
 	if err != nil {
 		panic("failed to connect database")
 	}
-	collection := client.Database(viper.GetString("mongo.databaseName")).Collection("posts")
+	collection := client.Database(viper.GetString("MONGO_DB_NAME")).Collection("posts")
 
 	return &MongoDBStore{Collection: collection}
 }

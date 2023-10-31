@@ -24,25 +24,25 @@ func InitRouter(e *echo.Echo) {
 	if err != nil {             // Handle errors reading the config file
 		panic(fmt.Errorf("fatal error config file: %s", err))
 	}
+	// Add Secret
+	viper.SetConfigName(".env")
+	viper.SetConfigType("env")
+	viper.MergeInConfig()
 
-	// DB
-	// db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
-	// if err != nil {
-	// 	log.Fatal("Connect to database error", err)
-	// }
-	// defer db.Close()
-
+	// API Version
 	api := e.Group("/v1")
 
-	// Validate
-	p := posts.NewHandler(posts.InitMongoDBStore(), cache.InitCache())
+	// Posts
+	p := posts.InitHandler(posts.InitMongoDBStore(), cache.InitCache())
 	pApi := api.Group("/posts")
 	{
 		pApi.GET("", p.GetPostHandler)
 		pApi.POST("", p.AddPostHandler)
 	}
 
+	//---------------------------------------------------
 	// Graceful Shutdown
+	//---------------------------------------------------
 	go func() {
 		port := viper.GetString("app.port")
 		if err := e.Start(":" + port); err != nil && err != http.ErrServerClosed { // Start server

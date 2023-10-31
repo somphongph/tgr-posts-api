@@ -7,12 +7,20 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type storer interface {
+	GetById(string) (Post, error)
+	GetAll() ([]Post, error)
+	Add(*Post) error
+	Update(*Post) error
+	Delete(string) error
+}
+
 type Handler struct {
 	store storer
 	cache cache.Cached
 }
 
-func NewHandler(store storer, cache cache.Cached) *Handler {
+func InitHandler(store storer, cache cache.Cached) *Handler {
 	return &Handler{store: store, cache: cache}
 }
 
