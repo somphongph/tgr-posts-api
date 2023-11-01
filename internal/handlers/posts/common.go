@@ -23,3 +23,14 @@ type Post struct {
 	CreatedAt time.Time          `json:"createdAt" bson:"createdAt"`
 	UpdatedAt time.Time          `json:"updatedAt" bson:"updatedAt"`
 }
+
+type PostRequest struct {
+	Title   string `json:"title"`
+	Caption string `json:"caption"`
+}
+
+type PostResponse struct {
+	Id      string `json:"id"`
+	Title   string `json:"title"`
+	Caption string `json:"caption"`
+}

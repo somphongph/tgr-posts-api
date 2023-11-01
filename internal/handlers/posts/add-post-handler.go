@@ -11,10 +11,10 @@ import (
 )
 
 func (h *Handler) AddPostHandler(c echo.Context) error {
-	p := Post{}
+	req := PostRequest{}
 
 	// Binding
-	if err := c.Bind(&p); err != nil {
+	if err := c.Bind(&req); err != nil {
 		res := responses.ResponseError()
 		return c.JSON(http.StatusBadRequest, res)
 	}
@@ -22,8 +22,8 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	// Bind object
 	post := &Post{
 		Id:        primitive.NewObjectID(),
-		Title:     p.Title,
-		Caption:   p.Caption,
+		Title:     req.Title,
+		Caption:   req.Caption,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -32,15 +32,16 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 
 	err := h.store.Add(post)
 	if err != nil {
-		// res := responses.ResponseError()
-		// c.JSON(http.StatusInternalServerError, common.ResponseFailed())
-
-		return err
+		res := responses.ResponseOperationFailed()
+		return c.JSON(http.StatusInternalServerError, res)
 	}
 
-	// return c.JSON(http.StatusOK, common.Response(book))
+	res := PostResponse{}
+	res.Id = post.Id.Hex()
+	res.Title = post.Title
+	res.Caption = post.Caption
 
-	res := responses.ResponseSuccess(nil)
+	resp := responses.ResponseSuccess(res)
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusOK, resp)
 }

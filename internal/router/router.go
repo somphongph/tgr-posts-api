@@ -33,6 +33,7 @@ func InitRouter(e *echo.Echo) {
 	api := e.Group("/v1")
 
 	// Posts
+	//---------------------------------------------------
 	p := posts.InitHandler(posts.InitMongoDBStore(), cache.InitCache())
 	pApi := api.Group("/posts")
 	{

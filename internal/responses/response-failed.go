@@ -19,3 +19,12 @@ func ResponseDataNotFound() (res models.Response) {
 
 	return res
 }
+
+func ResponseOperationFailed() (res models.Response) {
+	res = models.Response{}
+	res.Code = "operation_failed"
+	res.Message = "The operation failed."
+	res.Data = nil
+
+	return res
+}
