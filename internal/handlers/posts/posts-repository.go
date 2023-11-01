@@ -14,6 +14,14 @@ type MongoDBStore struct {
 	*mongo.Collection
 }
 
+type storer interface {
+	GetById(string) (Post, error)
+	GetAll() ([]Post, error)
+	Add(*Post) error
+	Update(*Post) error
+	Delete(string) error
+}
+
 func InitMongoDBStore() *MongoDBStore {
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(viper.GetString("MONGO_CONNECTION")))
 	if err != nil {
@@ -24,8 +32,8 @@ func InitMongoDBStore() *MongoDBStore {
 	return &MongoDBStore{Collection: collection}
 }
 
-func (s *MongoDBStore) GetById(pid string) (Post, error) {
-	id, _ := primitive.ObjectIDFromHex(pid)
+func (s *MongoDBStore) GetById(in string) (Post, error) {
+	id, _ := primitive.ObjectIDFromHex(in)
 
 	var (
 		ctx    = context.Background()
@@ -49,11 +57,10 @@ func (s *MongoDBStore) GetAll() ([]Post, error) {
 
 	// Find All
 	cursor, err := s.Collection.Find(ctx, filter)
-	defer cursor.Close(ctx)
-
 	if err != nil {
 		return nil, err
 	}
+	defer cursor.Close(ctx)
 
 	for cursor.Next(ctx) {
 		var item Post
@@ -86,8 +93,8 @@ func (s *MongoDBStore) Update(p *Post) error {
 	return err
 }
 
-func (s *MongoDBStore) Delete(pid string) error {
-	id, _ := primitive.ObjectIDFromHex(pid)
+func (s *MongoDBStore) Delete(in string) error {
+	id, _ := primitive.ObjectIDFromHex(in)
 
 	var (
 		ctx    = context.Background()
