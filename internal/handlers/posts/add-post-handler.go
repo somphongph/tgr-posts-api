@@ -9,6 +9,17 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type PostRequest struct {
+	Title   string `json:"title"`
+	Caption string `json:"caption"`
+}
+
+type PostResponse struct {
+	Id      string `json:"id"`
+	Title   string `json:"title"`
+	Caption string `json:"caption"`
+}
+
 func (h *Handler) AddPostHandler(c echo.Context) error {
 	req := PostRequest{}
 

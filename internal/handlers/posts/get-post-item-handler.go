@@ -7,7 +7,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *Handler) GetPostHandler(c echo.Context) error {
+type PostItemResponse struct {
+	Id      string `json:"id"`
+	Title   string `json:"title"`
+	Caption string `json:"caption"`
+}
+
+func (h *Handler) GetPostItemHandler(c echo.Context) error {
 	id := c.Param("id")
 	// post := Post{}
 
@@ -22,7 +28,13 @@ func (h *Handler) GetPostHandler(c echo.Context) error {
 	// data, _ := json.Marshal(book)
 	// t.cache.SetShortCache(cacheKey, data)
 
-	res := responses.ResponseSuccess(post)
+	// Response
+	res := PostItemResponse{}
+	res.Id = post.Id.Hex()
+	res.Title = post.Title
+	res.Caption = post.Caption
 
-	return c.JSON(http.StatusOK, res)
+	resp := responses.ResponseSuccess(res)
+
+	return c.JSON(http.StatusOK, resp)
 }
