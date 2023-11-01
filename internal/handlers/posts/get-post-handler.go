@@ -8,15 +8,21 @@ import (
 )
 
 func (h *Handler) GetPostHandler(c echo.Context) error {
-	p := Post{}
+	id := c.Param("id")
+	// post := Post{}
 
-	// Binding
-	if err := c.Bind(&p); err != nil {
-		res := responses.ResponseError()
-		return c.JSON(http.StatusBadRequest, res)
+	// Get data
+	post, err := h.store.GetById(id)
+	if err != nil {
+		res := responses.ResponseDataNotFound()
+		return c.JSON(http.StatusNotFound, res)
 	}
 
-	res := responses.ResponseSuccess(nil)
+	// Save data to cache
+	// data, _ := json.Marshal(book)
+	// t.cache.SetShortCache(cacheKey, data)
+
+	res := responses.ResponseSuccess(post)
 
 	return c.JSON(http.StatusOK, res)
 }

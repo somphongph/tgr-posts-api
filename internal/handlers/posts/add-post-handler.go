@@ -1,7 +1,6 @@
 package posts
 
 import (
-	"fmt"
 	"net/http"
 	"tgr-posts-api/internal/responses"
 	"time"
@@ -28,14 +27,14 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 		UpdatedAt: time.Now(),
 	}
 
-	fmt.Println(post)
-
+	// Insert
 	err := h.store.Add(post)
 	if err != nil {
 		res := responses.ResponseOperationFailed()
 		return c.JSON(http.StatusInternalServerError, res)
 	}
 
+	// Response
 	res := PostResponse{}
 	res.Id = post.Id.Hex()
 	res.Title = post.Title

@@ -37,7 +37,7 @@ func InitRouter(e *echo.Echo) {
 	p := posts.InitHandler(posts.InitMongoDBStore(), cache.InitCache())
 	pApi := api.Group("/posts")
 	{
-		pApi.GET("", p.GetPostHandler)
+		pApi.GET("/:id", p.GetPostHandler)
 		pApi.POST("", p.AddPostHandler)
 	}
 
