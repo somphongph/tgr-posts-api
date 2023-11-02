@@ -7,10 +7,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type PostItemResponse struct {
-	Id      string `json:"id"`
-	Title   string `json:"title"`
-	Caption string `json:"caption"`
+type postItemResponse struct {
+	Id     string `json:"id"`
+	Title  string `json:"title"`
+	Detail string `json:"detail"`
 }
 
 func (h *Handler) GetPostItemHandler(c echo.Context) error {
@@ -29,10 +29,10 @@ func (h *Handler) GetPostItemHandler(c echo.Context) error {
 	// t.cache.SetShortCache(cacheKey, data)
 
 	// Response
-	res := PostItemResponse{}
+	res := postItemResponse{}
 	res.Id = post.Id.Hex()
 	res.Title = post.Title
-	res.Caption = post.Caption
+	res.Detail = post.Detail
 
 	resp := responses.ResponseSuccess(res)
 

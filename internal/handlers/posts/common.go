@@ -19,7 +19,8 @@ func InitHandler(store storer, cache cache.Cached) *Handler {
 type Post struct {
 	Id        primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 	Title     string             `json:"title"`
-	Caption   string             `json:"caption"`
+	Detail    string             `json:"detail"`
+	ImageUrl  string             `json:"imageUrl"`
 	CreatedAt time.Time          `json:"createdAt" bson:"createdAt"`
 	UpdatedAt time.Time          `json:"updatedAt" bson:"updatedAt"`
 }
