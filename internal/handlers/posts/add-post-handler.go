@@ -3,7 +3,6 @@ package posts
 import (
 	"net/http"
 	"tgr-posts-api/internal/responses"
-	"time"
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -30,16 +29,23 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	}
 
 	// Bind object
-	post := &Post{
-		Id:        primitive.NewObjectID(),
-		Title:     req.Title,
-		Detail:    req.Detail,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+	post := Post{
+		Id:       primitive.NewObjectID(),
+		Title:    req.Title,
+		Detail:   req.Detail,
+		ImageUrl: "abc",
+		// Entity: models.Entity{
+		// Status:    "active",
+		// CreatedBy: "12345",
+		// CreatedOn: time.Time{},
+		// UpdatedBy: "12345",
+		// UpdatedOn: time.Time{},
+		// },
 	}
+	// post.Status = "active"
 
 	// Insert
-	err := h.store.Add(post)
+	err := h.store.Add(&post)
 	if err != nil {
 		res := responses.ResponseOperationFailed()
 		return c.JSON(http.StatusInternalServerError, res)
