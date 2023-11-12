@@ -1,8 +1,8 @@
 package posts
 
 import (
-	"tgr-posts-api/internal/store/cache"
-	models "tgr-posts-api/modules/shared/domains"
+	"tgr-posts-api/modules/shared/domains"
+	"tgr-posts-api/modules/shared/repositories/cache"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -22,5 +22,5 @@ type Post struct {
 	Detail   string             `json:"detail"`
 	ImageUrl string             `json:"imageUrl"`
 
-	models.Entity `bson:",inline"`
+	domains.Entity `bson:",inline"`
 }
