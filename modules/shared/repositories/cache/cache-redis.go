@@ -1,11 +1,11 @@
 package cache
 
 import (
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/go-redis/redis"
-	"github.com/spf13/viper"
 )
 
 type Cached interface {
@@ -21,9 +21,9 @@ type RedisStore struct {
 
 func InitCache() *RedisStore {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     viper.GetString("redis.host"),
-		Password: viper.GetString("redis.pass"), // no password set
-		DB:       0,                             // use default DB
+		Addr:     os.Getenv("REDIS_HOST"),
+		Password: os.Getenv("REDIS_PASS"), // no password set
+		DB:       0,                       // use default DB
 	})
 
 	return &RedisStore{rdb}
@@ -46,7 +46,7 @@ func (c *RedisStore) SetCache(key string, value interface{}, duration int) error
 
 func (c *RedisStore) SetShortCache(key string, value interface{}) error {
 	// Set time in second
-	intVar, err := strconv.Atoi(viper.GetString("redis.shortCache"))
+	intVar, err := strconv.Atoi(os.Getenv("REDIS_SHORT_CACHE"))
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func (c *RedisStore) SetShortCache(key string, value interface{}) error {
 
 func (c *RedisStore) SetLongCache(key string, value interface{}) error {
 	// Set time in second
-	intVar, err := strconv.Atoi(viper.GetString("redis.longCache"))
+	intVar, err := strconv.Atoi(os.Getenv("REDIS_LONG_CACHE"))
 	if err != nil {
 		return err
 	}

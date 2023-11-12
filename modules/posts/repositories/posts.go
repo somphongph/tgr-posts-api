@@ -11,16 +11,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type MongoDBStore struct {
-	*mongo.Collection
-}
-
 type Storer interface {
 	GetById(string) (domains.Post, error)
 	GetAll() ([]domains.Post, error)
 	Add(*domains.Post) error
 	Update(*domains.Post) error
 	Delete(string) error
+}
+
+type MongoDBStore struct {
+	*mongo.Collection
 }
 
 func InitMongoDBStore() *MongoDBStore {
