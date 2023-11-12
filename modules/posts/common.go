@@ -1,8 +1,8 @@
 package posts
 
 import (
-	"tgr-posts-api/internal/models"
 	"tgr-posts-api/internal/store/cache"
+	models "tgr-posts-api/modules/shared/domains"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

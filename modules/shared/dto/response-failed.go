@@ -1,9 +1,9 @@
-package responses
+package dto
 
-import "tgr-posts-api/internal/models"
+import "tgr-posts-api/modules/shared/domains"
 
-func ResponseError() (res models.Response) {
-	res = models.Response{}
+func ResponseError() (res domains.Response) {
+	res = domains.Response{}
 	res.Code = "cannot_bind_data"
 	res.Message = "Cannot bind data"
 	res.Data = nil
@@ -11,8 +11,8 @@ func ResponseError() (res models.Response) {
 	return res
 }
 
-func ResponseDataNotFound() (res models.Response) {
-	res = models.Response{}
+func ResponseDataNotFound() (res domains.Response) {
+	res = domains.Response{}
 	res.Code = "data_not_found"
 	res.Message = "Data not found."
 	res.Data = nil
@@ -20,8 +20,8 @@ func ResponseDataNotFound() (res models.Response) {
 	return res
 }
 
-func ResponseOperationFailed() (res models.Response) {
-	res = models.Response{}
+func ResponseOperationFailed() (res domains.Response) {
+	res = domains.Response{}
 	res.Code = "operation_failed"
 	res.Message = "The operation failed."
 	res.Data = nil

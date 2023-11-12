@@ -2,8 +2,9 @@ package posts
 
 import (
 	"net/http"
-	"tgr-posts-api/internal/models"
-	"tgr-posts-api/internal/responses"
+	"tgr-posts-api/modules/shared/domains"
+	"tgr-posts-api/modules/shared/dto"
+
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -31,7 +32,7 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 
 	// Binding
 	if err := c.Bind(&req); err != nil {
-		res := responses.ResponseError()
+		res := dto.ResponseError()
 		return c.JSON(http.StatusBadRequest, res)
 	}
 
@@ -41,7 +42,7 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 		Title:    req.Title,
 		Detail:   req.Detail,
 		ImageUrl: "abc",
-		Entity: models.Entity{
+		Entity: domains.Entity{
 			Status:    Active,
 			CreatedBy: "12345",
 			CreatedOn: time.Time{},
@@ -53,7 +54,7 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	// Insert
 	err := h.store.Add(&post)
 	if err != nil {
-		res := responses.ResponseOperationFailed()
+		res := dto.ResponseOperationFailed()
 		return c.JSON(http.StatusInternalServerError, res)
 	}
 
@@ -63,7 +64,7 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	res.Title = post.Title
 	res.Detail = post.Detail
 
-	resp := responses.ResponseSuccess(res)
+	resp := dto.ResponseSuccess(res)
 
 	return c.JSON(http.StatusOK, resp)
 }

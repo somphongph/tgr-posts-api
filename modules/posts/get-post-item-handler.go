@@ -2,7 +2,7 @@ package posts
 
 import (
 	"net/http"
-	"tgr-posts-api/internal/responses"
+	"tgr-posts-api/modules/shared/dto"
 
 	"github.com/labstack/echo/v4"
 )
@@ -20,7 +20,7 @@ func (h *Handler) GetPostItemHandler(c echo.Context) error {
 	// Get data
 	post, err := h.store.GetById(id)
 	if err != nil {
-		res := responses.ResponseDataNotFound()
+		res := dto.ResponseDataNotFound()
 		return c.JSON(http.StatusNotFound, res)
 	}
 
@@ -34,7 +34,7 @@ func (h *Handler) GetPostItemHandler(c echo.Context) error {
 	res.Title = post.Title
 	res.Detail = post.Detail
 
-	resp := responses.ResponseSuccess(res)
+	resp := dto.ResponseSuccess(res)
 
 	return c.JSON(http.StatusOK, resp)
 }
