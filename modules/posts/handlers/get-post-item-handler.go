@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type postItemResponse struct {
+type getPostItemResponse struct {
 	Id     string `json:"id"`
 	Title  string `json:"title"`
 	Detail string `json:"detail"`
@@ -29,7 +29,7 @@ func (h *Handler) GetPostItemHandler(c echo.Context) error {
 	// t.cache.SetShortCache(cacheKey, data)
 
 	// Response
-	res := postItemResponse{}
+	res := getPostItemResponse{}
 	res.Id = post.Id.Hex()
 	res.Title = post.Title
 	res.Detail = post.Detail

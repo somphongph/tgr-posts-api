@@ -13,19 +13,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type postRequest struct {
+type addPostRequest struct {
 	Title  string `json:"title"`
 	Detail string `json:"detail"`
 }
 
-type postResponse struct {
+type addPostResponse struct {
 	Id     string `json:"id"`
 	Title  string `json:"title"`
 	Detail string `json:"detail"`
 }
 
 func (h *Handler) AddPostHandler(c echo.Context) error {
-	req := postRequest{}
+	req := addPostRequest{}
 
 	// Binding
 	if err := c.Bind(&req); err != nil {
@@ -56,7 +56,7 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	}
 
 	// Response
-	res := postResponse{}
+	res := addPostResponse{}
 	res.Id = post.Id.Hex()
 	res.Title = post.Title
 	res.Detail = post.Detail
