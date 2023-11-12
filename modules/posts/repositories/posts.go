@@ -2,9 +2,9 @@ package repositories
 
 import (
 	"context"
+	"os"
 	"tgr-posts-api/modules/posts/domains"
 
-	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,11 +28,11 @@ type MongoDBStore struct {
 }
 
 func InitMongoDBStore() *MongoDBStore {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(viper.GetString("MONGO_CONNECTION")))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(os.Getenv("MONGO_CONNECTION")))
 	if err != nil {
 		panic("failed to connect database")
 	}
-	collection := client.Database(viper.GetString("MONGO_DB_NAME")).Collection(tableName)
+	collection := client.Database(os.Getenv("MONGO_DB_NAME")).Collection(tableName)
 
 	return &MongoDBStore{Collection: collection}
 }
