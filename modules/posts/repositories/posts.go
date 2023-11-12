@@ -11,7 +11,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type Storer interface {
+const (
+	tableName = "posts"
+)
+
+type PostRepository interface {
 	GetById(string) (domains.Post, error)
 	GetAll() ([]domains.Post, error)
 	Add(*domains.Post) error
@@ -28,7 +32,7 @@ func InitMongoDBStore() *MongoDBStore {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	collection := client.Database(viper.GetString("MONGO_DB_NAME")).Collection("posts")
+	collection := client.Database(viper.GetString("MONGO_DB_NAME")).Collection(tableName)
 
 	return &MongoDBStore{Collection: collection}
 }

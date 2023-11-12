@@ -6,10 +6,10 @@ import (
 )
 
 type Handler struct {
-	store repositories.Storer
+	store repositories.PostRepository
 	cache cache.Cached
 }
 
-func PostHandler(store repositories.Storer, cache cache.Cached) *Handler {
+func PostHandler(store repositories.PostRepository, cache cache.Cached) *Handler {
 	return &Handler{store: store, cache: cache}
 }

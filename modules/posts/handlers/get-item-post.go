@@ -13,7 +13,7 @@ type getPostItemResponse struct {
 	Detail string `json:"detail"`
 }
 
-func (h *Handler) GetPostItemHandler(c echo.Context) error {
+func (h *Handler) GetItemPostHandler(c echo.Context) error {
 	id := c.Param("id")
 	// post := Post{}
 
