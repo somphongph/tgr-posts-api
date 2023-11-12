@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"tgr-posts-api/internal/router"
+	"tgr-posts-api/cmd/router"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

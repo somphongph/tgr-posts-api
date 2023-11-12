@@ -3,6 +3,7 @@ package router
 import (
 	"context"
 	"fmt"
+	"log"
 	"tgr-posts-api/modules/posts/handlers"
 	"tgr-posts-api/modules/posts/repositories"
 	"tgr-posts-api/modules/shared/repositories/cache"
@@ -12,6 +13,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 )
@@ -26,9 +28,14 @@ func InitRouter(e *echo.Echo) {
 		panic(fmt.Errorf("fatal error config file: %s", err))
 	}
 	// Add Secret
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
-	viper.MergeInConfig()
+	// viper.SetConfigName(".env")
+	// viper.SetConfigType("env")
+	// viper.MergeInConfig()
+
+	err2 := godotenv.Load("./configs/.env")
+	if err2 != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	// API Version
 	api := e.Group("/v1")
