@@ -1,7 +1,8 @@
-package posts
+package repositories
 
 import (
 	"context"
+	"tgr-posts-api/modules/posts/domains"
 
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,11 +15,11 @@ type MongoDBStore struct {
 	*mongo.Collection
 }
 
-type storer interface {
-	GetById(string) (Post, error)
-	GetAll() ([]Post, error)
-	Add(*Post) error
-	Update(*Post) error
+type Storer interface {
+	GetById(string) (domains.Post, error)
+	GetAll() ([]domains.Post, error)
+	Add(*domains.Post) error
+	Update(*domains.Post) error
 	Delete(string) error
 }
 
@@ -32,13 +33,13 @@ func InitMongoDBStore() *MongoDBStore {
 	return &MongoDBStore{Collection: collection}
 }
 
-func (s *MongoDBStore) GetById(in string) (Post, error) {
+func (s *MongoDBStore) GetById(in string) (domains.Post, error) {
 	id, _ := primitive.ObjectIDFromHex(in)
 
 	var (
 		ctx    = context.Background()
 		filter = bson.M{"_id": id}
-		result Post
+		result domains.Post
 	)
 
 	// Find
@@ -47,12 +48,12 @@ func (s *MongoDBStore) GetById(in string) (Post, error) {
 	return result, err
 }
 
-func (s *MongoDBStore) GetAll() ([]Post, error) {
+func (s *MongoDBStore) GetAll() ([]domains.Post, error) {
 
 	var (
 		ctx    = context.Background()
 		filter = bson.M{}
-		result []Post
+		result []domains.Post
 	)
 
 	// Find All
@@ -63,7 +64,7 @@ func (s *MongoDBStore) GetAll() ([]Post, error) {
 	defer cursor.Close(ctx)
 
 	for cursor.Next(ctx) {
-		var item Post
+		var item domains.Post
 		cursor.Decode(&item)
 		result = append(result, item)
 	}
@@ -74,7 +75,7 @@ func (s *MongoDBStore) GetAll() ([]Post, error) {
 	return result, err
 }
 
-func (s *MongoDBStore) Add(p *Post) error {
+func (s *MongoDBStore) Add(p *domains.Post) error {
 	var ctx = context.Background()
 
 	// Insert
@@ -82,7 +83,7 @@ func (s *MongoDBStore) Add(p *Post) error {
 	return err
 }
 
-func (s *MongoDBStore) Update(p *Post) error {
+func (s *MongoDBStore) Update(p *domains.Post) error {
 	update := bson.M{
 		"$set": p,
 	}

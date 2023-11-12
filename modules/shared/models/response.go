@@ -1,4 +1,4 @@
-package domains
+package models
 
 type Paging struct {
 	Page  int `json:"page"`

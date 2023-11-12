@@ -1,9 +1,10 @@
-package posts
+package handlers
 
 import (
 	"net/http"
-	"tgr-posts-api/modules/shared/domains"
+	"tgr-posts-api/modules/posts/domains"
 	"tgr-posts-api/modules/shared/dto"
+	"tgr-posts-api/modules/shared/models"
 
 	"time"
 
@@ -37,12 +38,12 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	}
 
 	// Bind object
-	post := Post{
+	post := domains.Post{
 		Id:       primitive.NewObjectID(),
 		Title:    req.Title,
 		Detail:   req.Detail,
 		ImageUrl: "abc",
-		Entity: domains.Entity{
+		Entity: models.Entity{
 			Status:    Active,
 			CreatedBy: "12345",
 			CreatedOn: time.Time{},

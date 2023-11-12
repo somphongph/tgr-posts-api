@@ -3,8 +3,9 @@ package router
 import (
 	"context"
 	"fmt"
-	"tgr-posts-api/internal/handlers/posts"
-	"tgr-posts-api/internal/store/cache"
+	"tgr-posts-api/modules/posts/handlers"
+	"tgr-posts-api/modules/posts/repositories"
+	"tgr-posts-api/modules/shared/repositories/cache"
 
 	"net/http"
 	"os"
@@ -34,7 +35,7 @@ func InitRouter(e *echo.Echo) {
 
 	// Posts
 	//---------------------------------------------------
-	p := posts.InitHandler(posts.InitMongoDBStore(), cache.InitCache())
+	p := handlers.PostHandler(repositories.InitMongoDBStore(), cache.InitCache())
 	pApi := api.Group("/posts")
 	{
 		pApi.GET("/:id", p.GetPostItemHandler)

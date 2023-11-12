@@ -1,9 +1,9 @@
 package dto
 
-import "tgr-posts-api/modules/shared/domains"
+import "tgr-posts-api/modules/shared/models"
 
-func ResponseSuccess(i interface{}) (res domains.Response) {
-	res = domains.Response{}
+func ResponseSuccess(i interface{}) (res models.Response) {
+	res = models.Response{}
 	res.Code = "success"
 	res.Message = "Success"
 	res.Data = i
@@ -11,8 +11,8 @@ func ResponseSuccess(i interface{}) (res domains.Response) {
 	return res
 }
 
-func ResponseItemSuccess(i interface{}, c bool) (res domains.ResponseItem) {
-	res = domains.ResponseItem{}
+func ResponseItemSuccess(i interface{}, c bool) (res models.ResponseItem) {
+	res = models.ResponseItem{}
 	res.Code = "success"
 	res.Message = "Success"
 	res.IsCached = c
@@ -21,8 +21,8 @@ func ResponseItemSuccess(i interface{}, c bool) (res domains.ResponseItem) {
 	return res
 }
 
-func ResponsePagingSuccess(i interface{}, p domains.Paging) (res domains.ResponsePaging) {
-	res = domains.ResponsePaging{}
+func ResponsePagingSuccess(i interface{}, p models.Paging) (res models.ResponsePaging) {
+	res = models.ResponsePaging{}
 	res.Code = "success"
 	res.Message = "Success"
 	res.Data = i

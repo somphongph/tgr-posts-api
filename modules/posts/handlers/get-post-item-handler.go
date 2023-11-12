@@ -1,4 +1,4 @@
-package posts
+package handlers
 
 import (
 	"net/http"
