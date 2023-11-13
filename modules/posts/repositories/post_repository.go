@@ -3,7 +3,7 @@ package repositories
 import (
 	"context"
 	"tgr-posts-api/configs"
-	"tgr-posts-api/modules/posts/domains"
+	"tgr-posts-api/modules/posts/entities"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,10 +16,10 @@ const (
 )
 
 type PostRepository interface {
-	GetById(string) (domains.Post, error)
-	GetAll() ([]domains.Post, error)
-	Add(*domains.Post) error
-	Update(*domains.Post) error
+	GetById(string) (entities.Post, error)
+	GetAll() ([]entities.Post, error)
+	Add(*entities.Post) error
+	Update(*entities.Post) error
 	Delete(string) error
 }
 
@@ -37,13 +37,13 @@ func InitMongoDBStore(cfg *configs.MongoDB) *MongoDBStore {
 	return &MongoDBStore{Collection: collection}
 }
 
-func (s *MongoDBStore) GetById(in string) (domains.Post, error) {
+func (s *MongoDBStore) GetById(in string) (entities.Post, error) {
 	id, _ := primitive.ObjectIDFromHex(in)
 
 	var (
 		ctx    = context.Background()
 		filter = bson.M{"_id": id}
-		result domains.Post
+		result entities.Post
 	)
 
 	// Find
@@ -52,12 +52,12 @@ func (s *MongoDBStore) GetById(in string) (domains.Post, error) {
 	return result, err
 }
 
-func (s *MongoDBStore) GetAll() ([]domains.Post, error) {
+func (s *MongoDBStore) GetAll() ([]entities.Post, error) {
 
 	var (
 		ctx    = context.Background()
 		filter = bson.M{}
-		result []domains.Post
+		result []entities.Post
 	)
 
 	// Find All
@@ -68,7 +68,7 @@ func (s *MongoDBStore) GetAll() ([]domains.Post, error) {
 	defer cursor.Close(ctx)
 
 	for cursor.Next(ctx) {
-		var item domains.Post
+		var item entities.Post
 		cursor.Decode(&item)
 		result = append(result, item)
 	}
@@ -79,7 +79,7 @@ func (s *MongoDBStore) GetAll() ([]domains.Post, error) {
 	return result, err
 }
 
-func (s *MongoDBStore) Add(p *domains.Post) error {
+func (s *MongoDBStore) Add(p *entities.Post) error {
 	var ctx = context.Background()
 
 	// Insert
@@ -87,7 +87,7 @@ func (s *MongoDBStore) Add(p *domains.Post) error {
 	return err
 }
 
-func (s *MongoDBStore) Update(p *domains.Post) error {
+func (s *MongoDBStore) Update(p *entities.Post) error {
 	update := bson.M{
 		"$set": p,
 	}

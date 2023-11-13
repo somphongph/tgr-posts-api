@@ -1,7 +1,7 @@
-package domains
+package entities
 
 import (
-	"tgr-posts-api/modules/shared/models"
+	"tgr-posts-api/modules/shared/entities"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -12,5 +12,5 @@ type Post struct {
 	Detail   string             `json:"detail"`
 	ImageUrl string             `json:"imageUrl"`
 
-	models.Entity `bson:",inline"`
+	entities.Entity `bson:",inline"`
 }

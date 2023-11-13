@@ -3,10 +3,8 @@ package handlers
 import (
 	"net/http"
 	"tgr-posts-api/modules/posts/constants"
-	"tgr-posts-api/modules/posts/domains"
+	"tgr-posts-api/modules/posts/entities"
 	"tgr-posts-api/modules/shared/dto"
-	"tgr-posts-api/modules/shared/models"
-
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -34,19 +32,16 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	}
 
 	// Bind object
-	post := domains.Post{
-		Id:       primitive.NewObjectID(),
-		Title:    req.Title,
-		Detail:   req.Detail,
-		ImageUrl: "abc",
-		Entity: models.Entity{
-			Status:    constants.Active,
-			CreatedBy: "12345",
-			CreatedOn: time.Time{},
-			UpdatedBy: "12345",
-			UpdatedOn: time.Time{},
-		},
-	}
+	post := entities.Post{}
+	post.Id = primitive.NewObjectID()
+	post.Title = req.Title
+	post.Detail = req.Detail
+	post.ImageUrl = "abc"
+	post.Status = constants.Active
+	post.CreatedBy = "12345"
+	post.CreatedOn = time.Time{}
+	post.UpdatedBy = "12345"
+	post.UpdatedOn = time.Time{}
 
 	// Insert
 	err := h.store.Add(&post)
