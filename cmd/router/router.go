@@ -32,8 +32,8 @@ func InitRouter(e *echo.Echo) {
 	// viper.SetConfigType("env")
 	// viper.MergeInConfig()
 
-	err2 := godotenv.Load("./configs/.env")
-	if err2 != nil {
+	err = godotenv.Load("./configs/.env")
+	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
