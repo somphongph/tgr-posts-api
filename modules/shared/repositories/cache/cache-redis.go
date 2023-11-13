@@ -1,8 +1,7 @@
 package cache
 
 import (
-	"os"
-	"strconv"
+	"tgr-posts-api/configs"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -19,12 +18,20 @@ type RedisStore struct {
 	*redis.Client
 }
 
-func InitCache() *RedisStore {
+var (
+	shortCache = 0
+	longCache  = 0
+)
+
+func InitCache(cfg *configs.Redis) *RedisStore {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_HOST"),
-		Password: os.Getenv("REDIS_PASS"), // no password set
-		DB:       0,                       // use default DB
+		Addr:     cfg.Host,
+		Password: cfg.Pass, // no password set
+		DB:       0,        // use default DB
 	})
+
+	shortCache = cfg.ShortCache
+	longCache = cfg.LongCache
 
 	return &RedisStore{rdb}
 }
@@ -38,33 +45,21 @@ func (c *RedisStore) GetCache(key string) (string, error) {
 func (c *RedisStore) SetCache(key string, value interface{}, duration int) error {
 	// Set time in second
 	dur := time.Duration(duration) * time.Second
-
 	err := c.Set(key, value, dur).Err()
 
 	return err
 }
 
 func (c *RedisStore) SetShortCache(key string, value interface{}) error {
-	// Set time in second
-	intVar, err := strconv.Atoi(os.Getenv("REDIS_SHORT_CACHE"))
-	if err != nil {
-		return err
-	}
-	dur := time.Duration(intVar) * time.Second
-	err = c.Set(key, value, dur).Err()
+	dur := time.Duration(shortCache) * time.Second
+	err := c.Set(key, value, dur).Err()
 
 	return err
 }
 
 func (c *RedisStore) SetLongCache(key string, value interface{}) error {
-	// Set time in second
-	intVar, err := strconv.Atoi(os.Getenv("REDIS_LONG_CACHE"))
-	if err != nil {
-		return err
-	}
-
-	dur := time.Duration(intVar) * time.Second
-	err = c.Set(key, value, dur).Err()
+	dur := time.Duration(longCache) * time.Second
+	err := c.Set(key, value, dur).Err()
 
 	return err
 }

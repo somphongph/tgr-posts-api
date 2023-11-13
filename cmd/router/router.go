@@ -26,7 +26,7 @@ func InitRouter(cfg *configs.Configs) {
 
 	// Posts
 	//---------------------------------------------------
-	p := handlers.PostHandler(repositories.InitMongoDBStore(&cfg.MongoDB), cache.InitCache())
+	p := handlers.PostHandler(repositories.InitMongoDBStore(&cfg.MongoDB), cache.InitCache(&cfg.Redis))
 	pApi := api.Group("/posts")
 	{
 		pApi.GET("/:id", p.GetItemPostHandler)
