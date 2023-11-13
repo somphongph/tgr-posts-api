@@ -28,7 +28,7 @@ func main() {
 
 	cfg := new(configs.Configs)
 
-	// Echo configs
+	// Configs
 	cfg.App.Port = viper.GetString("app.port")
 
 	// Database Configs
