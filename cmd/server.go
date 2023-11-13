@@ -6,8 +6,7 @@ import (
 	"tgr-posts-api/cmd/router"
 	"tgr-posts-api/configs"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -21,6 +20,11 @@ func main() {
 		panic(fmt.Errorf("fatal error config file: %s", err))
 	}
 
+	err = godotenv.Load("./configs/.env")
+	if err != nil {
+		panic(fmt.Errorf("error loading .env file"))
+	}
+
 	cfg := new(configs.Configs)
 
 	// Echo configs
@@ -30,12 +34,8 @@ func main() {
 	cfg.MongoDB.Connection = os.Getenv("MONGO_CONNECTION")
 	cfg.MongoDB.DbName = os.Getenv("MONGO_DB_NAME")
 
-	e := echo.New()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-
 	// Router
-	router.InitRouter(e)
+	router.InitRouter(cfg)
 
 	fmt.Println("Please use server.go for main file")
 	fmt.Println("start at port:", viper.GetString("app.port"))

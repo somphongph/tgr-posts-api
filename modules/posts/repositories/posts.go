@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"context"
-	"os"
+	"tgr-posts-api/configs"
 	"tgr-posts-api/modules/posts/domains"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -27,12 +27,12 @@ type MongoDBStore struct {
 	*mongo.Collection
 }
 
-func InitMongoDBStore() *MongoDBStore {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(os.Getenv("MONGO_CONNECTION")))
+func InitMongoDBStore(cfg *configs.MongoDB) *MongoDBStore {
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(cfg.Connection))
 	if err != nil {
 		panic("failed to connect database")
 	}
-	collection := client.Database(os.Getenv("MONGO_DB_NAME")).Collection(tableName)
+	collection := client.Database(cfg.DbName).Collection(tableName)
 
 	return &MongoDBStore{Collection: collection}
 }

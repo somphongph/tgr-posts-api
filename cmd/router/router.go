@@ -2,8 +2,7 @@ package router
 
 import (
 	"context"
-	"fmt"
-	"log"
+	"tgr-posts-api/configs"
 	"tgr-posts-api/modules/posts/handlers"
 	"tgr-posts-api/modules/posts/repositories"
 	"tgr-posts-api/modules/shared/repositories/cache"
@@ -13,36 +12,21 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
-	"github.com/spf13/viper"
+	"github.com/labstack/echo/v4/middleware"
 )
 
-func InitRouter(e *echo.Echo) {
-	// Config
-	viper.AddConfigPath("./configs")
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil {             // Handle errors reading the config file
-		panic(fmt.Errorf("fatal error config file: %s", err))
-	}
-	// Add Secret
-	// viper.SetConfigName(".env")
-	// viper.SetConfigType("env")
-	// viper.MergeInConfig()
-
-	err = godotenv.Load("./configs/.env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+func InitRouter(cfg *configs.Configs) {
+	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
 	// API Version
 	api := e.Group("/v1")
 
 	// Posts
 	//---------------------------------------------------
-	p := handlers.PostHandler(repositories.InitMongoDBStore(), cache.InitCache())
+	p := handlers.PostHandler(repositories.InitMongoDBStore(&cfg.MongoDB), cache.InitCache())
 	pApi := api.Group("/posts")
 	{
 		pApi.GET("/:id", p.GetItemPostHandler)
@@ -53,8 +37,7 @@ func InitRouter(e *echo.Echo) {
 	// Graceful Shutdown
 	//---------------------------------------------------
 	go func() {
-		port := viper.GetString("app.port")
-		if err := e.Start(":" + port); err != nil && err != http.ErrServerClosed { // Start server
+		if err := e.Start(":" + cfg.App.Port); err != nil && err != http.ErrServerClosed { // Start server
 			e.Logger.Fatal("shutting down the server")
 		}
 	}()
