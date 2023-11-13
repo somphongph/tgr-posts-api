@@ -38,5 +38,4 @@ func main() {
 	router.InitRouter(cfg)
 
 	fmt.Println("Please use server.go for main file")
-	fmt.Println("start at port:", viper.GetString("app.port"))
 }

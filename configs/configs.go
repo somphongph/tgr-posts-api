@@ -2,10 +2,10 @@ package configs
 
 type Configs struct {
 	MongoDB MongoDB
-	App     Echo
+	App     App
 }
 
-type Echo struct {
+type App struct {
 	Port string
 }
 
