@@ -17,7 +17,7 @@ const (
 
 type PostRepository interface {
 	GetById(string) (entities.Post, error)
-	GetAll() ([]entities.Post, error)
+	Fetch() ([]entities.Post, error)
 	Add(*entities.Post) error
 	Update(*entities.Post) error
 	Delete(string) error
@@ -28,10 +28,21 @@ type MongoDBStore struct {
 }
 
 func InitMongoDBStore(cfg *configs.MongoDB) *MongoDBStore {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(cfg.Connection))
+	// Use the SetServerAPIOptions() method to set the Stable API version to 1
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI(cfg.Connection).SetServerAPIOptions(serverAPI)
+
+	// Create a new client and connect to the server
+	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
-		panic("failed to connect database")
+		panic(err)
 	}
+	defer func() {
+		if err = client.Disconnect(context.TODO()); err != nil {
+			panic(err)
+		}
+	}()
+
 	collection := client.Database(cfg.DbName).Collection(tableName)
 
 	return &MongoDBStore{Collection: collection}
@@ -52,7 +63,7 @@ func (s *MongoDBStore) GetById(in string) (entities.Post, error) {
 	return result, err
 }
 
-func (s *MongoDBStore) GetAll() ([]entities.Post, error) {
+func (s *MongoDBStore) Fetch() ([]entities.Post, error) {
 
 	var (
 		ctx    = context.Background()

@@ -11,6 +11,7 @@ type Post struct {
 	Title    string             `json:"title"`
 	Detail   string             `json:"detail"`
 	ImageUrl string             `json:"imageUrl"`
+	PlaceTag string             `json:"placeTag"`
 
 	entities.Entity `bson:",inline"`
 }
