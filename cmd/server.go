@@ -1,18 +1,24 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	"os"
+	"os/signal"
 	"strconv"
 	"tgr-posts-api/cmd/router"
 	"tgr-posts-api/configs"
+	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
 )
 
 func main() {
-	// Config
+	// viper
 	viper.AddConfigPath("./configs")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
@@ -21,6 +27,7 @@ func main() {
 		panic(fmt.Errorf("fatal error config file: %s", err))
 	}
 
+	// godotenv
 	err = godotenv.Load("./configs/.env")
 	if err != nil {
 		panic(fmt.Errorf("error loading .env file"))
@@ -28,10 +35,10 @@ func main() {
 
 	cfg := new(configs.Configs)
 
-	// Configs
+	// App
 	cfg.App.Port = viper.GetString("app.port")
 
-	// Database Configs
+	// Database
 	cfg.MongoDB.Connection = os.Getenv("MONGO_CONNECTION")
 	cfg.MongoDB.DbName = os.Getenv("MONGO_DB_NAME")
 
@@ -41,8 +48,30 @@ func main() {
 	cfg.Redis.ShortCache, _ = strconv.Atoi(os.Getenv("REDIS_SHORT_CACHE"))
 	cfg.Redis.LongCache, _ = strconv.Atoi(os.Getenv("REDIS_LONG_CACHE"))
 
-	// Router
-	router.InitRouter(cfg)
+	// Echo
+	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	fmt.Println("Please use server.go for main file")
+	// Router
+	router.InitRouter(e, cfg)
+
+	//---------------------------------------------------
+	// Graceful Shutdown
+	//---------------------------------------------------
+	go func() {
+		if err := e.Start(":" + cfg.App.Port); err != nil && err != http.ErrServerClosed { // Start server
+			e.Logger.Fatal("shutting down the server")
+		}
+	}()
+
+	shutdown := make(chan os.Signal, 1)
+	signal.Notify(shutdown, os.Interrupt)
+	<-shutdown
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := e.Shutdown(ctx); err != nil {
+		e.Logger.Fatal(err)
+	}
+
 }
