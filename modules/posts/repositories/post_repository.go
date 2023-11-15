@@ -36,12 +36,6 @@ func InitMongoDBStore(cfg *configs.MongoDB) *MongoDBStore {
 	if err != nil {
 		panic(err)
 	}
-	// defer client.Disconnect(context.Background())
-	// defer func() {
-	// 	if err = client.Disconnect(context.Background()); err != nil {
-	// 		panic(err)
-	// 	}
-	// }()
 
 	collection := client.Database(cfg.DbName).Collection(tableName)
 
