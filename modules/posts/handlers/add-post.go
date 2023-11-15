@@ -37,6 +37,7 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	post.Title = req.Title
 	post.Detail = req.Detail
 	post.ImageUrl = "abc"
+	// post.PlaceTag = "sdfgsdfg"
 	post.Status = constants.Active
 	post.CreatedBy = "12345"
 	post.CreatedOn = time.Time{}
