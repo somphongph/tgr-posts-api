@@ -4,6 +4,8 @@ import (
 	"context"
 	"tgr-posts-api/configs"
 	"tgr-posts-api/modules/posts/entities"
+	"tgr-posts-api/modules/shared/util"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -82,6 +84,12 @@ func (s *MongoDBStore) Fetch() ([]entities.Post, error) {
 func (s *MongoDBStore) Add(p *entities.Post) error {
 	ctx := context.Background()
 
+	p.Status = "active"
+	p.CreatedBy = util.GetUserId()
+	p.CreatedOn = time.Time{}
+	p.UpdatedBy = util.GetUserId()
+	p.UpdatedOn = time.Time{}
+
 	// Insert
 	_, err := s.Collection.InsertOne(ctx, p)
 	return err
@@ -92,6 +100,9 @@ func (s *MongoDBStore) Update(p *entities.Post) error {
 	update := bson.M{
 		"$set": p,
 	}
+
+	p.UpdatedBy = util.GetUserId()
+	p.UpdatedOn = time.Time{}
 
 	// Update
 	_, err := s.Collection.UpdateByID(ctx, p.Id, update)

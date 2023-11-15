@@ -2,10 +2,8 @@ package handlers
 
 import (
 	"net/http"
-	"tgr-posts-api/modules/posts/constants"
 	"tgr-posts-api/modules/posts/entities"
 	"tgr-posts-api/modules/shared/dto"
-	"time"
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -37,12 +35,7 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	post.Title = req.Title
 	post.Detail = req.Detail
 	post.ImageUrl = "abc"
-	// post.PlaceTag = "sdfgsdfg"
-	post.Status = constants.Active
-	post.CreatedBy = "12345"
-	post.CreatedOn = time.Time{}
-	post.UpdatedBy = "12345"
-	post.UpdatedOn = time.Time{}
+	post.PlaceTag = "sdfgsdfg"
 
 	// Insert
 	err := h.store.Add(&post)
