@@ -28,20 +28,20 @@ type MongoDBStore struct {
 }
 
 func InitMongoDBStore(cfg *configs.MongoDB) *MongoDBStore {
-	// Use the SetServerAPIOptions() method to set the Stable API version to 1
-	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(cfg.Connection).SetServerAPIOptions(serverAPI)
+	ctx := context.Background()
+	opts := options.Client().ApplyURI(cfg.Connection)
 
 	// Create a new client and connect to the server
-	client, err := mongo.Connect(context.TODO(), opts)
+	client, err := mongo.Connect(ctx, opts)
 	if err != nil {
 		panic(err)
 	}
-	defer func() {
-		if err = client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
+	// defer client.Disconnect(context.Background())
+	// defer func() {
+	// 	if err = client.Disconnect(context.Background()); err != nil {
+	// 		panic(err)
+	// 	}
+	// }()
 
 	collection := client.Database(cfg.DbName).Collection(tableName)
 
@@ -51,11 +51,9 @@ func InitMongoDBStore(cfg *configs.MongoDB) *MongoDBStore {
 func (s *MongoDBStore) GetById(in string) (entities.Post, error) {
 	id, _ := primitive.ObjectIDFromHex(in)
 
-	var (
-		ctx    = context.Background()
-		filter = bson.M{"_id": id}
-		result entities.Post
-	)
+	ctx := context.Background()
+	filter := bson.M{"_id": id}
+	var result entities.Post
 
 	// Find
 	err := s.Collection.FindOne(ctx, filter).Decode(&result)
@@ -64,12 +62,9 @@ func (s *MongoDBStore) GetById(in string) (entities.Post, error) {
 }
 
 func (s *MongoDBStore) Fetch() ([]entities.Post, error) {
-
-	var (
-		ctx    = context.Background()
-		filter = bson.M{}
-		result []entities.Post
-	)
+	ctx := context.Background()
+	filter := bson.M{}
+	var result []entities.Post
 
 	// Find All
 	cursor, err := s.Collection.Find(ctx, filter)
@@ -91,7 +86,7 @@ func (s *MongoDBStore) Fetch() ([]entities.Post, error) {
 }
 
 func (s *MongoDBStore) Add(p *entities.Post) error {
-	var ctx = context.Background()
+	ctx := context.Background()
 
 	// Insert
 	_, err := s.Collection.InsertOne(ctx, p)
@@ -99,10 +94,10 @@ func (s *MongoDBStore) Add(p *entities.Post) error {
 }
 
 func (s *MongoDBStore) Update(p *entities.Post) error {
+	ctx := context.Background()
 	update := bson.M{
 		"$set": p,
 	}
-	var ctx = context.Background()
 
 	// Update
 	_, err := s.Collection.UpdateByID(ctx, p.Id, update)
@@ -112,10 +107,8 @@ func (s *MongoDBStore) Update(p *entities.Post) error {
 func (s *MongoDBStore) Delete(in string) error {
 	id, _ := primitive.ObjectIDFromHex(in)
 
-	var (
-		ctx    = context.Background()
-		filter = bson.M{"_id": id}
-	)
+	ctx := context.Background()
+	filter := bson.M{"_id": id}
 
 	// Delete
 	_, err := s.Collection.DeleteOne(ctx, filter)
