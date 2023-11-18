@@ -15,10 +15,9 @@ type getPostItemResponse struct {
 
 func (h *Handler) GetItemPostHandler(c echo.Context) error {
 	id := c.Param("id")
-	// post := Post{}
 
 	// Get data
-	post, err := h.store.GetById(id)
+	p, err := h.store.GetById(id)
 	if err != nil {
 		res := dto.ResponseDataNotFound()
 		return c.JSON(http.StatusNotFound, res)
@@ -30,9 +29,9 @@ func (h *Handler) GetItemPostHandler(c echo.Context) error {
 
 	// Response
 	res := getPostItemResponse{}
-	res.Id = post.Id.Hex()
-	res.Title = post.Title
-	res.Detail = post.Detail
+	res.Id = p.Id.Hex()
+	res.Title = p.Title
+	res.Detail = p.Detail
 
 	resp := dto.ResponseSuccess(res)
 

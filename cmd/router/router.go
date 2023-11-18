@@ -19,6 +19,7 @@ func InitRouter(e *echo.Echo, cfg *configs.Configs) {
 	pApi := api.Group("/posts")
 	{
 		pApi.GET("/:id", p.GetItemPostHandler)
+		pApi.GET("", p.GetListPostHandler)
 		pApi.POST("", p.AddPostHandler)
 	}
 

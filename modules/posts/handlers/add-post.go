@@ -30,25 +30,24 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	}
 
 	// Bind object
-	post := entities.Post{}
-	post.Id = primitive.NewObjectID()
-	post.Title = req.Title
-	post.Detail = req.Detail
-	post.ImageUrl = "abc"
-	post.PlaceTag = "sdfgsdfg"
+	p := entities.Post{}
+	p.Id = primitive.NewObjectID()
+	p.Title = req.Title
+	p.Detail = req.Detail
+	p.ImageUrl = "abc"
+	p.PlaceTag = "sdfgsdfg"
 
 	// Insert
-	err := h.store.Add(&post)
-	if err != nil {
+	if err := h.store.Add(&p); err != nil {
 		res := dto.ResponseOperationFailed()
 		return c.JSON(http.StatusInternalServerError, res)
 	}
 
 	// Response
 	res := addPostResponse{}
-	res.Id = post.Id.Hex()
-	res.Title = post.Title
-	res.Detail = post.Detail
+	res.Id = p.Id.Hex()
+	res.Title = p.Title
+	res.Detail = p.Detail
 
 	resp := dto.ResponseSuccess(res)
 
