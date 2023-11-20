@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"tgr-posts-api/modules/shared/dto"
@@ -18,11 +17,17 @@ type getListItemResponse struct {
 }
 
 func (h *Handler) GetListPostHandler(c echo.Context) error {
-	filter := bson.M{}
-	page, _ := strconv.Atoi(c.QueryParam("page"))
-	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	page, err := strconv.Atoi(c.QueryParam("page"))
+	if err != nil {
+		page = 1
+	}
 
-	fmt.Println(page)
+	limit, err := strconv.Atoi(c.QueryParam("page"))
+	if err != nil {
+		limit = 1
+	}
+
+	filter := bson.M{}
 
 	// Get data
 	posts, err := h.store.Fetch(filter, page, limit)
