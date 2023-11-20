@@ -1,11 +1,14 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 	"tgr-posts-api/modules/shared/dto"
 	"tgr-posts-api/modules/shared/models"
 
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type getListItemResponse struct {
@@ -15,9 +18,14 @@ type getListItemResponse struct {
 }
 
 func (h *Handler) GetListPostHandler(c echo.Context) error {
+	filter := bson.M{}
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+	fmt.Println(page)
 
 	// Get data
-	p, err := h.store.Fetch(1, 1)
+	posts, err := h.store.Fetch(filter, page, limit)
 	if err != nil {
 		res := dto.ResponseDataNotFound()
 		return c.JSON(http.StatusNotFound, res)
@@ -31,7 +39,7 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 	// Response
 	l := getListItemResponse{}
 	res := []getListItemResponse{}
-	for _, v := range p {
+	for _, v := range posts {
 		l.Id = v.Id.Hex()
 		l.Title = v.Title
 		l.Detail = v.Detail
@@ -39,12 +47,12 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 		res = append(res, l)
 	}
 
-	page := models.Paging{}
-	page.Page = 1
-	page.Limit = 20
-	page.Total = 200
+	p := models.Paging{}
+	p.Page = 1
+	p.Limit = 20
+	p.Total = 200
 
-	resp := dto.ResponsePagingSuccess(res, page)
+	resp := dto.ResponsePagingSuccess(res, p)
 
 	return c.JSON(http.StatusOK, resp)
 }
