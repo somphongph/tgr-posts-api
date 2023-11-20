@@ -28,7 +28,7 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 	}
 
 	filter := bson.M{}
-	sort := bson.D{{Key: "createdOn", Value: 1}}
+	sort := bson.D{{Key: "createdOn", Value: -1}}
 
 	// Get data
 	posts, err := h.store.Fetch(filter, sort, page, limit)
