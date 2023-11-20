@@ -17,7 +17,7 @@ type getListItemResponse struct {
 func (h *Handler) GetListPostHandler(c echo.Context) error {
 
 	// Get data
-	p, err := h.store.Fetch()
+	p, err := h.store.Fetch(1, 1)
 	if err != nil {
 		res := dto.ResponseDataNotFound()
 		return c.JSON(http.StatusNotFound, res)

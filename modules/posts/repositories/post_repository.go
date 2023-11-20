@@ -19,7 +19,7 @@ const (
 
 type PostRepository interface {
 	GetById(string) (entities.Post, error)
-	Fetch() ([]entities.Post, error)
+	Fetch(page, limit int) ([]entities.Post, error)
 	Add(*entities.Post) error
 	Update(*entities.Post) error
 	Delete(string) error
@@ -57,18 +57,22 @@ func (s *MongoDBStore) GetById(in string) (entities.Post, error) {
 	return result, err
 }
 
-func (s *MongoDBStore) Fetch() ([]entities.Post, error) {
+func (s *MongoDBStore) Fetch(page, limit int) ([]entities.Post, error) {
 	ctx := context.Background()
 	filter := bson.M{}
-	var result []entities.Post
+
+	l := int64(limit)
+	skip := int64(page*limit - limit)
+	opt := options.FindOptions{Limit: &l, Skip: &skip}
 
 	// Find All
-	cursor, err := s.Collection.Find(ctx, filter)
+	cursor, err := s.Collection.Find(ctx, &filter, &opt)
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(ctx)
 
+	var result []entities.Post
 	for cursor.Next(ctx) {
 		var item entities.Post
 		cursor.Decode(&item)
