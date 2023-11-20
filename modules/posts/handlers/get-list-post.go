@@ -22,15 +22,16 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 		page = 1
 	}
 
-	limit, err := strconv.Atoi(c.QueryParam("page"))
+	limit, err := strconv.Atoi(c.QueryParam("limit"))
 	if err != nil {
 		limit = 1
 	}
 
 	filter := bson.M{}
+	sort := bson.D{{Key: "createdOn", Value: 1}}
 
 	// Get data
-	posts, err := h.store.Fetch(filter, page, limit)
+	posts, err := h.store.Fetch(filter, sort, page, limit)
 	if err != nil {
 		res := dto.ResponseDataNotFound()
 		return c.JSON(http.StatusNotFound, res)

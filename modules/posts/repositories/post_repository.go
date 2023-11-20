@@ -19,7 +19,7 @@ const (
 
 type PostRepository interface {
 	GetById(string) (entities.Post, error)
-	Fetch(filter primitive.M, page, limit int) ([]entities.Post, error)
+	Fetch(filter primitive.M, sort primitive.D, page, limit int) ([]entities.Post, error)
 	Add(*entities.Post) error
 	Update(*entities.Post) error
 	Delete(string) error
@@ -57,12 +57,12 @@ func (s *MongoDBStore) GetById(in string) (entities.Post, error) {
 	return result, err
 }
 
-func (s *MongoDBStore) Fetch(filter primitive.M, page, limit int) ([]entities.Post, error) {
+func (s *MongoDBStore) Fetch(filter primitive.M, sort primitive.D, page, limit int) ([]entities.Post, error) {
 	ctx := context.Background()
 
 	l := int64(limit)
 	skip := int64(page*limit - limit)
-	opt := options.FindOptions{Limit: &l, Skip: &skip}
+	opt := options.FindOptions{Limit: &l, Skip: &skip, Sort: &sort}
 
 	// Find
 	cursor, err := s.Collection.Find(ctx, &filter, &opt)
@@ -89,9 +89,9 @@ func (s *MongoDBStore) Add(p *entities.Post) error {
 
 	p.Status = "active"
 	p.CreatedBy = util.GetUserId()
-	p.CreatedOn = time.Time{}
+	p.CreatedOn = time.Now()
 	p.UpdatedBy = util.GetUserId()
-	p.UpdatedOn = time.Time{}
+	p.UpdatedOn = time.Now()
 
 	// Insert
 	_, err := s.Collection.InsertOne(ctx, p)
@@ -105,7 +105,7 @@ func (s *MongoDBStore) Update(p *entities.Post) error {
 	}
 
 	p.UpdatedBy = util.GetUserId()
-	p.UpdatedOn = time.Time{}
+	p.UpdatedOn = time.Now()
 
 	// Update
 	_, err := s.Collection.UpdateByID(ctx, p.Id, update)
