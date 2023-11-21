@@ -27,7 +27,7 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 
 	// Binding
 	if err := c.Bind(&req); err != nil {
-		res := dto.ResponseError()
+		res := dto.CannotBindData()
 		return c.JSON(http.StatusBadRequest, res)
 	}
 
@@ -41,7 +41,7 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 
 	// Insert
 	if err := h.store.Add(&p); err != nil {
-		res := dto.ResponseOperationFailed()
+		res := dto.OperationFailed()
 		return c.JSON(http.StatusInternalServerError, res)
 	}
 
@@ -51,7 +51,7 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	res.Title = p.Title
 	res.Detail = p.Detail
 
-	resp := dto.ResponseSuccess(res)
+	resp := dto.Success(res)
 
 	return c.JSON(http.StatusOK, resp)
 }

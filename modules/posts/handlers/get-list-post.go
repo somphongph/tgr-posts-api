@@ -34,7 +34,7 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 	// Get data
 	posts, err := h.store.Fetch(filter, sort, page, limit)
 	if err != nil {
-		res := dto.ResponseOperationFailed()
+		res := dto.OperationFailed()
 		return c.JSON(http.StatusNotFound, res)
 	}
 
@@ -51,7 +51,7 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 		res = append(res, l)
 	}
 
-	resp := dto.ResponseListSuccess(res)
+	resp := dto.ListSuccess(res)
 
 	return c.JSON(http.StatusOK, resp)
 }

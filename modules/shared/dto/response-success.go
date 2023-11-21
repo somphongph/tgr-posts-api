@@ -2,7 +2,7 @@ package dto
 
 import "tgr-posts-api/modules/shared/models"
 
-func ResponseSuccess(i interface{}) (res models.Response) {
+func Success(i interface{}) (res models.Response) {
 	res = models.Response{}
 	res.Code = "success"
 	res.Message = "Success"
@@ -11,7 +11,7 @@ func ResponseSuccess(i interface{}) (res models.Response) {
 	return res
 }
 
-func ResponseItemSuccess(i interface{}, c bool) (res models.ResponseItem) {
+func ItemSuccess(i interface{}, c bool) (res models.ResponseItem) {
 	res = models.ResponseItem{}
 	res.Code = "success"
 	res.Message = "Success"
@@ -21,7 +21,7 @@ func ResponseItemSuccess(i interface{}, c bool) (res models.ResponseItem) {
 	return res
 }
 
-func ResponseListSuccess(i interface{}) (res models.ResponseList) {
+func ListSuccess(i interface{}) (res models.ResponseList) {
 	res = models.ResponseList{}
 	res.Code = "success"
 	res.Message = "Success"
@@ -30,7 +30,7 @@ func ResponseListSuccess(i interface{}) (res models.ResponseList) {
 	return res
 }
 
-func ResponsePagingSuccess(i interface{}, p models.Paging) (res models.ResponsePaging) {
+func PagingSuccess(i interface{}, p models.Paging) (res models.ResponsePaging) {
 	res = models.ResponsePaging{}
 	res.Code = "success"
 	res.Message = "Success"

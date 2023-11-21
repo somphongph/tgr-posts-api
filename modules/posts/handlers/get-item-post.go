@@ -19,7 +19,7 @@ func (h *Handler) GetItemPostHandler(c echo.Context) error {
 	// Get data
 	p, err := h.store.GetById(id)
 	if err != nil {
-		res := dto.ResponseDataNotFound()
+		res := dto.DataNotFound()
 		return c.JSON(http.StatusNotFound, res)
 	}
 
@@ -33,7 +33,7 @@ func (h *Handler) GetItemPostHandler(c echo.Context) error {
 	res.Title = p.Title
 	res.Detail = p.Detail
 
-	resp := dto.ResponseSuccess(res)
+	resp := dto.Success(res)
 
 	return c.JSON(http.StatusOK, resp)
 }

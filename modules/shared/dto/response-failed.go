@@ -2,7 +2,7 @@ package dto
 
 import "tgr-posts-api/modules/shared/models"
 
-func ResponseError() (res models.Response) {
+func CannotBindData() (res models.Response) {
 	res = models.Response{}
 	res.Code = "cannot_bind_data"
 	res.Message = "Cannot bind data"
@@ -11,7 +11,7 @@ func ResponseError() (res models.Response) {
 	return res
 }
 
-func ResponseDataNotFound() (res models.Response) {
+func DataNotFound() (res models.Response) {
 	res = models.Response{}
 	res.Code = "data_not_found"
 	res.Message = "Data not found."
@@ -20,7 +20,7 @@ func ResponseDataNotFound() (res models.Response) {
 	return res
 }
 
-func ResponseOperationFailed() (res models.Response) {
+func OperationFailed() (res models.Response) {
 	res = models.Response{}
 	res.Code = "operation_failed"
 	res.Message = "The operation failed."
