@@ -21,6 +21,15 @@ func ResponseItemSuccess(i interface{}, c bool) (res models.ResponseItem) {
 	return res
 }
 
+func ResponseListSuccess(i interface{}) (res models.ResponseList) {
+	res = models.ResponseList{}
+	res.Code = "success"
+	res.Message = "Success"
+	res.Data = i
+
+	return res
+}
+
 func ResponsePagingSuccess(i interface{}, p models.Paging) (res models.ResponsePaging) {
 	res = models.ResponsePaging{}
 	res.Code = "success"

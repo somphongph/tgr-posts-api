@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 	"tgr-posts-api/modules/shared/dto"
-	"tgr-posts-api/modules/shared/models"
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
@@ -39,13 +38,6 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, res)
 	}
 
-	// Count
-	count, err := h.store.Count(filter)
-	if err != nil {
-		res := dto.ResponseOperationFailed()
-		return c.JSON(http.StatusNotFound, res)
-	}
-
 	// Response
 	l := getPostListResponse{}
 	res := []getPostListResponse{}
@@ -59,12 +51,7 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 		res = append(res, l)
 	}
 
-	p := models.Paging{}
-	p.Page = page
-	p.Limit = limit
-	p.Total = count
-
-	resp := dto.ResponsePagingSuccess(res, p)
+	resp := dto.ResponseListSuccess(res)
 
 	return c.JSON(http.StatusOK, resp)
 }

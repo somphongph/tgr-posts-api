@@ -17,6 +17,10 @@ type ResponseItem struct {
 	Response
 }
 
+type ResponseList struct {
+	Response
+}
+
 type ResponsePaging struct {
 	Response
 	Paging
