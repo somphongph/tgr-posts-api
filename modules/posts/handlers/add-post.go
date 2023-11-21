@@ -10,8 +10,10 @@ import (
 )
 
 type addPostRequest struct {
-	Title  string `json:"title"`
-	Detail string `json:"detail"`
+	Title    string `json:"title"`
+	Detail   string `json:"detail"`
+	ImageUrl string `json:"imageUrl"`
+	PlaceTag string `json:"placeTag"`
 }
 
 type addPostResponse struct {
@@ -34,8 +36,8 @@ func (h *Handler) AddPostHandler(c echo.Context) error {
 	p.Id = primitive.NewObjectID()
 	p.Title = req.Title
 	p.Detail = req.Detail
-	p.ImageUrl = "abc"
-	p.PlaceTag = "sdfgsdfg"
+	p.ImageUrl = req.ImageUrl
+	p.PlaceTag = req.PlaceTag
 
 	// Insert
 	if err := h.store.Add(&p); err != nil {

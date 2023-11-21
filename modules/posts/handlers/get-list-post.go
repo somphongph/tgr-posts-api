@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type getListItemResponse struct {
+type getPostListResponse struct {
 	Id       string `json:"id"`
 	Title    string `json:"title"`
 	Detail   string `json:"detail"`
@@ -35,24 +35,20 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 	// Get data
 	posts, err := h.store.Fetch(filter, sort, page, limit)
 	if err != nil {
-		res := dto.ResponseDataNotFound()
+		res := dto.ResponseOperationFailed()
 		return c.JSON(http.StatusNotFound, res)
 	}
 
+	// Count
 	count, err := h.store.Count(filter)
 	if err != nil {
-		res := dto.ResponseDataNotFound()
+		res := dto.ResponseOperationFailed()
 		return c.JSON(http.StatusNotFound, res)
 	}
 
-	// fmt.Printf("%v", p)
-	// Save data to cache
-	// data, _ := json.Marshal(book)
-	// t.cache.SetShortCache(cacheKey, data)
-
 	// Response
-	l := getListItemResponse{}
-	res := []getListItemResponse{}
+	l := getPostListResponse{}
+	res := []getPostListResponse{}
 	for _, v := range posts {
 		l.Id = v.Id.Hex()
 		l.Title = v.Title
@@ -64,7 +60,7 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 	}
 
 	p := models.Paging{}
-	p.Page = 1
+	p.Page = page
 	p.Limit = limit
 	p.Total = count
 
