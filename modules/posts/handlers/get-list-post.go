@@ -11,9 +11,11 @@ import (
 )
 
 type getListItemResponse struct {
-	Id     string `json:"id"`
-	Title  string `json:"title"`
-	Detail string `json:"detail"`
+	Id       string `json:"id"`
+	Title    string `json:"title"`
+	Detail   string `json:"detail"`
+	ImageUrl string `json:"imageUrl"`
+	PlaceTag string `json:"placeTag"`
 }
 
 func (h *Handler) GetListPostHandler(c echo.Context) error {
@@ -24,7 +26,7 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 
 	limit, err := strconv.Atoi(c.QueryParam("limit"))
 	if err != nil {
-		limit = 1
+		limit = 20
 	}
 
 	filter := bson.M{}
@@ -32,6 +34,12 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 
 	// Get data
 	posts, err := h.store.Fetch(filter, sort, page, limit)
+	if err != nil {
+		res := dto.ResponseDataNotFound()
+		return c.JSON(http.StatusNotFound, res)
+	}
+
+	count, err := h.store.Count(filter)
 	if err != nil {
 		res := dto.ResponseDataNotFound()
 		return c.JSON(http.StatusNotFound, res)
@@ -49,14 +57,16 @@ func (h *Handler) GetListPostHandler(c echo.Context) error {
 		l.Id = v.Id.Hex()
 		l.Title = v.Title
 		l.Detail = v.Detail
+		l.ImageUrl = v.ImageUrl
+		l.PlaceTag = v.PlaceTag
 
 		res = append(res, l)
 	}
 
 	p := models.Paging{}
 	p.Page = 1
-	p.Limit = 20
-	p.Total = 200
+	p.Limit = limit
+	p.Total = count
 
 	resp := dto.ResponsePagingSuccess(res, p)
 

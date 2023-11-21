@@ -20,6 +20,7 @@ const (
 type PostRepository interface {
 	GetById(string) (entities.Post, error)
 	Fetch(filter primitive.M, sort primitive.D, page, limit int) ([]entities.Post, error)
+	Count(filter primitive.M) (int64, error)
 	Add(*entities.Post) error
 	Update(*entities.Post) error
 	Delete(string) error
@@ -62,10 +63,10 @@ func (s *MongoDBStore) Fetch(filter primitive.M, sort primitive.D, page, limit i
 
 	l := int64(limit)
 	skip := int64(page*limit - limit)
-	opt := options.FindOptions{Limit: &l, Skip: &skip, Sort: &sort}
+	opts := options.FindOptions{Limit: &l, Skip: &skip, Sort: &sort}
 
 	// Find
-	cursor, err := s.Collection.Find(ctx, &filter, &opt)
+	cursor, err := s.Collection.Find(ctx, &filter, &opts)
 	if err != nil {
 		return nil, err
 	}
@@ -82,6 +83,20 @@ func (s *MongoDBStore) Fetch(filter primitive.M, sort primitive.D, page, limit i
 	}
 
 	return result, err
+}
+
+func (s *MongoDBStore) Count(filter primitive.M) (int64, error) {
+	ctx := context.Background()
+
+	opts := options.Count().SetHint("_id_")
+
+	// Count
+	count, err := s.CountDocuments(ctx, filter, opts)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, err
 }
 
 func (s *MongoDBStore) Add(p *entities.Post) error {
