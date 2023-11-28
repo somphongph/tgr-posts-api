@@ -56,11 +56,11 @@ func GetConfig() Configs {
 			Connection: os.Getenv("MONGO_CONNECTION"),
 			DbName:     os.Getenv("MONGO_DB_NAME"),
 		},
-		// Redis: Redis{
-		//   Host: os.Getenv("REDIS_HOST")
-		//   Pass: os.Getenv("REDIS_PASS")
-		//   ShortCache, _: strconv.Atoi(os.Getenv("REDIS_SHORT_CACHE"))
-		//   LongCache, _: strconv.Atoi(os.Getenv("REDIS_LONG_CACHE"))
-		// },
+		Redis: Redis{
+			Host:       os.Getenv("REDIS_HOST"),
+			Pass:       os.Getenv("REDIS_PASS"),
+			ShortCache: viper.GetInt("redis.short-cache"),
+			LongCache:  viper.GetInt("redis.long-cache"),
+		},
 	}
 }

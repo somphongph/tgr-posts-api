@@ -1,5 +1,5 @@
 run:
-	go run server.go
+	go run cmd/server.go
 
 test:
 	go test -v ./...
