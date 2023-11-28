@@ -30,7 +30,7 @@ type mongoDBStore struct {
 	*mongo.Collection
 }
 
-func InitMongoDBStore(cfg *configs.MongoDB) *mongoDBStore {
+func InitPostRepository(cfg *configs.MongoDB) *mongoDBStore {
 	ctx := context.Background()
 	opts := options.Client().ApplyURI(cfg.Connection)
 

@@ -12,15 +12,17 @@ import (
 func InitRouter(e *echo.Echo, cfg *configs.Configs) {
 	// API Version
 	api := e.Group("/v1")
+	cache := cache.InitRedisCache(&cfg.Redis)
 
 	// Posts
 	//---------------------------------------------------
-	p := handlers.PostHandler(repositories.InitMongoDBStore(&cfg.MongoDB), cache.InitCache(&cfg.Redis))
-	pApi := api.Group("/posts")
+	postRepo := repositories.InitPostRepository(&cfg.MongoDB)
+	postHandler := handlers.PostHandler(postRepo, cache)
+	postApi := api.Group("/posts")
 	{
-		pApi.GET("/:id", p.GetItemPostHandler)
-		pApi.GET("", p.GetListPostHandler)
-		pApi.POST("", p.AddPostHandler)
+		postApi.GET("/:id", postHandler.GetItemPostHandler)
+		postApi.GET("", postHandler.GetListPostHandler)
+		postApi.POST("", postHandler.AddPostHandler)
 	}
 
 }

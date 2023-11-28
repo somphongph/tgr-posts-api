@@ -14,7 +14,7 @@ type Cached interface {
 	SetLongCache(string, interface{}) error
 }
 
-type RedisStore struct {
+type redisStore struct {
 	*redis.Client
 }
 
@@ -23,7 +23,7 @@ var (
 	longCache  = 0
 )
 
-func InitCache(cfg *configs.Redis) *RedisStore {
+func InitRedisCache(cfg *configs.Redis) *redisStore {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     cfg.Host,
 		Password: cfg.Pass, // no password set
@@ -33,16 +33,16 @@ func InitCache(cfg *configs.Redis) *RedisStore {
 	shortCache = cfg.ShortCache
 	longCache = cfg.LongCache
 
-	return &RedisStore{rdb}
+	return &redisStore{rdb}
 }
 
-func (c *RedisStore) GetCache(key string) (string, error) {
+func (c *redisStore) GetCache(key string) (string, error) {
 	val, err := c.Get(key).Result()
 
 	return val, err
 }
 
-func (c *RedisStore) SetCache(key string, value interface{}, duration int) error {
+func (c *redisStore) SetCache(key string, value interface{}, duration int) error {
 	// Set time in second
 	dur := time.Duration(duration) * time.Second
 	err := c.Set(key, value, dur).Err()
@@ -50,14 +50,14 @@ func (c *RedisStore) SetCache(key string, value interface{}, duration int) error
 	return err
 }
 
-func (c *RedisStore) SetShortCache(key string, value interface{}) error {
+func (c *redisStore) SetShortCache(key string, value interface{}) error {
 	dur := time.Duration(shortCache) * time.Second
 	err := c.Set(key, value, dur).Err()
 
 	return err
 }
 
-func (c *RedisStore) SetLongCache(key string, value interface{}) error {
+func (c *redisStore) SetLongCache(key string, value interface{}) error {
 	dur := time.Duration(longCache) * time.Second
 	err := c.Set(key, value, dur).Err()
 
