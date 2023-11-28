@@ -22,7 +22,7 @@ type addPostResponse struct {
 	Detail string `json:"detail"`
 }
 
-func (h *Handler) AddPostHandler(c echo.Context) error {
+func (h *handler) AddPostHandler(c echo.Context) error {
 	req := addPostRequest{}
 
 	// Binding

@@ -26,11 +26,11 @@ type PostRepository interface {
 	Delete(string) error
 }
 
-type MongoDBStore struct {
+type mongoDBStore struct {
 	*mongo.Collection
 }
 
-func InitMongoDBStore(cfg *configs.MongoDB) *MongoDBStore {
+func InitMongoDBStore(cfg *configs.MongoDB) *mongoDBStore {
 	ctx := context.Background()
 	opts := options.Client().ApplyURI(cfg.Connection)
 
@@ -42,10 +42,10 @@ func InitMongoDBStore(cfg *configs.MongoDB) *MongoDBStore {
 
 	collection := client.Database(cfg.DbName).Collection(tableName)
 
-	return &MongoDBStore{Collection: collection}
+	return &mongoDBStore{Collection: collection}
 }
 
-func (s *MongoDBStore) GetById(in string) (entities.Post, error) {
+func (s *mongoDBStore) GetById(in string) (entities.Post, error) {
 	id, _ := primitive.ObjectIDFromHex(in)
 
 	ctx := context.Background()
@@ -58,7 +58,7 @@ func (s *MongoDBStore) GetById(in string) (entities.Post, error) {
 	return result, err
 }
 
-func (s *MongoDBStore) Fetch(filter primitive.M, sort primitive.D, page, limit int) ([]entities.Post, error) {
+func (s *mongoDBStore) Fetch(filter primitive.M, sort primitive.D, page, limit int) ([]entities.Post, error) {
 	ctx := context.Background()
 
 	l := int64(limit)
@@ -85,7 +85,7 @@ func (s *MongoDBStore) Fetch(filter primitive.M, sort primitive.D, page, limit i
 	return result, err
 }
 
-func (s *MongoDBStore) Count(filter primitive.M) (int64, error) {
+func (s *mongoDBStore) Count(filter primitive.M) (int64, error) {
 	ctx := context.Background()
 
 	opts := options.Count().SetHint("_id_")
@@ -99,7 +99,7 @@ func (s *MongoDBStore) Count(filter primitive.M) (int64, error) {
 	return count, err
 }
 
-func (s *MongoDBStore) Add(p *entities.Post) error {
+func (s *mongoDBStore) Add(p *entities.Post) error {
 	ctx := context.Background()
 
 	p.Status = "active"
@@ -113,7 +113,7 @@ func (s *MongoDBStore) Add(p *entities.Post) error {
 	return err
 }
 
-func (s *MongoDBStore) Update(p *entities.Post) error {
+func (s *mongoDBStore) Update(p *entities.Post) error {
 	ctx := context.Background()
 	update := bson.M{
 		"$set": p,
@@ -127,7 +127,7 @@ func (s *MongoDBStore) Update(p *entities.Post) error {
 	return err
 }
 
-func (s *MongoDBStore) Delete(in string) error {
+func (s *mongoDBStore) Delete(in string) error {
 	id, _ := primitive.ObjectIDFromHex(in)
 
 	ctx := context.Background()

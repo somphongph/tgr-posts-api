@@ -5,11 +5,11 @@ import (
 	"tgr-posts-api/modules/shared/repositories/cache"
 )
 
-type Handler struct {
+type handler struct {
 	store repositories.PostRepository
 	cache cache.Cached
 }
 
-func PostHandler(store repositories.PostRepository, cache cache.Cached) *Handler {
-	return &Handler{store: store, cache: cache}
+func PostHandler(store repositories.PostRepository, cache cache.Cached) *handler {
+	return &handler{store: store, cache: cache}
 }

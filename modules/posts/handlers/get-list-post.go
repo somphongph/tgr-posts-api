@@ -17,7 +17,7 @@ type getPostListResponse struct {
 	PlaceTag string `json:"placeTag"`
 }
 
-func (h *Handler) GetListPostHandler(c echo.Context) error {
+func (h *handler) GetListPostHandler(c echo.Context) error {
 	page, err := strconv.Atoi(c.QueryParam("page"))
 	if err != nil {
 		page = 1
