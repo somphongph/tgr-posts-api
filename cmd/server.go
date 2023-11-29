@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-
+	// Configs
 	cfg := configs.GetConfig()
 
 	// Echo
