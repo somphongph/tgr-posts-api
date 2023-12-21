@@ -12,6 +12,7 @@ type Configs struct {
 	App     App
 	MongoDB MongoDB
 	Redis   Redis
+	Tgr     Tgr
 }
 
 type App struct {
@@ -30,6 +31,10 @@ type Redis struct {
 	Pass       string
 	ShortCache int
 	LongCache  int
+}
+
+type Tgr struct {
+	AuthApi string
 }
 
 func GetConfig() Configs {
@@ -61,6 +66,9 @@ func GetConfig() Configs {
 			Pass:       os.Getenv("REDIS_PASS"),
 			ShortCache: viper.GetInt("redis.short-cache"),
 			LongCache:  viper.GetInt("redis.long-cache"),
+		},
+		Tgr: Tgr{
+			AuthApi: os.Getenv("TGR_AUTH_API"),
 		},
 	}
 }

@@ -17,7 +17,7 @@ func InitRouter(e *echo.Echo, cfg *configs.Configs) {
 	// Posts
 	//---------------------------------------------------
 	postRepo := repositories.InitPostRepository(&cfg.MongoDB)
-	postHandler := handlers.PostHandler(postRepo, cache)
+	postHandler := handlers.PostHandler(cfg, postRepo, cache)
 	postApi := api.Group("/posts")
 	{
 		postApi.GET("/:id", postHandler.GetItemPostHandler)

@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+	"tgr-posts-api/modules/posts/repositories"
 	"tgr-posts-api/modules/shared/dto"
 
 	"github.com/labstack/echo/v4"
@@ -35,9 +37,10 @@ func (h *handler) GetListPostHandler(c echo.Context) error {
 	posts, err := h.store.Fetch(filter, sort, page, limit)
 	if err != nil {
 		res := dto.OperationFailed()
-		return c.JSON(http.StatusNotFound, res)
+		return c.JSON(http.StatusInternalServerError, res)
 	}
-
+	acc, _ := repositories.GetAccount("657d6c672d19a6c75bd4e55a")
+	fmt.Println(acc)
 	// Response
 	l := getPostListResponse{}
 	res := []getPostListResponse{}
