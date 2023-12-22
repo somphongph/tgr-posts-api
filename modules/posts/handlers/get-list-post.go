@@ -1,22 +1,23 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
-	"tgr-posts-api/modules/posts/repositories"
 	"tgr-posts-api/modules/shared/dto"
+	"tgr-posts-api/modules/shared/models"
+	"tgr-posts-api/modules/shared/repositories/services"
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 type getPostListResponse struct {
-	Id       string `json:"id"`
-	Title    string `json:"title"`
-	Detail   string `json:"detail"`
-	ImageUrl string `json:"imageUrl"`
-	PlaceTag string `json:"placeTag"`
+	Id       string                `json:"id"`
+	Title    string                `json:"title"`
+	Detail   string                `json:"detail"`
+	ImageUrl string                `json:"imageUrl"`
+	PlaceTag string                `json:"placeTag"`
+	Account  models.AccountProfile `json:"account"`
 }
 
 func (h *handler) GetListPostHandler(c echo.Context) error {
@@ -39,7 +40,7 @@ func (h *handler) GetListPostHandler(c echo.Context) error {
 		res := dto.OperationFailed()
 		return c.JSON(http.StatusInternalServerError, res)
 	}
-	account := repositories.InitAccountApi(&h.cfg.Tgr)
+	account := services.InitAccountApi(&h.cfg.Tgr)
 
 	// Response
 	l := getPostListResponse{}
@@ -53,8 +54,8 @@ func (h *handler) GetListPostHandler(c echo.Context) error {
 
 		// Get Account
 		acc, _ := account.GetAccount(v.CreatedBy)
+		l.Account = acc
 
-		fmt.Println("--->", acc.Id)
 		res = append(res, l)
 	}
 

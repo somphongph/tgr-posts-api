@@ -1,4 +1,4 @@
-package repositories
+package services
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"tgr-posts-api/configs"
+	"tgr-posts-api/modules/shared/models"
 )
 
 type accountApi struct {
@@ -13,16 +14,9 @@ type accountApi struct {
 }
 
 type response struct {
-	Code    string         `json:"code"`
-	Message string         `json:"message"`
-	Data    accountProfile `json:"data"`
-}
-
-type accountProfile struct {
-	Id          string `json:"id"`
-	Username    string `json:"username"`
-	DisplayName string `json:"displayName"`
-	PhotoUrl    string `json:"photoUrl"`
+	Code    string                `json:"code"`
+	Message string                `json:"message"`
+	Data    models.AccountProfile `json:"data"`
 }
 
 func InitAccountApi(c *configs.Tgr) *accountApi {
@@ -31,7 +25,7 @@ func InitAccountApi(c *configs.Tgr) *accountApi {
 	}
 }
 
-func (a *accountApi) GetAccount(acc string) (accountProfile, error) {
+func (a *accountApi) GetAccount(acc string) (models.AccountProfile, error) {
 	resp := response{}
 	url := fmt.Sprintf("%v/v1/users/%v/profile", a.url, acc)
 	res, err := http.Get(url)
