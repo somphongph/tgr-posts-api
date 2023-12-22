@@ -1,5 +1,5 @@
 package util
 
 func GetUserId() string {
-	return "test"
+	return "657d6c672d19a6c75bd4e55a"
 }

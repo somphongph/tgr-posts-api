@@ -39,8 +39,8 @@ func (h *handler) GetListPostHandler(c echo.Context) error {
 		res := dto.OperationFailed()
 		return c.JSON(http.StatusInternalServerError, res)
 	}
-	acc, _ := repositories.GetAccount("657d6c672d19a6c75bd4e55a")
-	fmt.Println(acc)
+	account := repositories.InitAccountApi(&h.cfg.Tgr)
+
 	// Response
 	l := getPostListResponse{}
 	res := []getPostListResponse{}
@@ -51,6 +51,10 @@ func (h *handler) GetListPostHandler(c echo.Context) error {
 		l.ImageUrl = v.ImageUrl
 		l.PlaceTag = v.PlaceTag
 
+		// Get Account
+		acc, _ := account.GetAccount(v.CreatedBy)
+
+		fmt.Println("--->", acc.Id)
 		res = append(res, l)
 	}
 

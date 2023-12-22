@@ -5,26 +5,50 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"tgr-posts-api/configs"
 )
 
-func GetAccount(acc string) (interface{}, error) {
-	url := fmt.Sprintf("%v/v1/users/%v", "https://sit-auth.tripgator.com/auth-api", acc)
+type accountApi struct {
+	url string
+}
+
+type response struct {
+	Code    string         `json:"code"`
+	Message string         `json:"message"`
+	Data    accountProfile `json:"data"`
+}
+
+type accountProfile struct {
+	Id          string `json:"id"`
+	Username    string `json:"username"`
+	DisplayName string `json:"displayName"`
+	PhotoUrl    string `json:"photoUrl"`
+}
+
+func InitAccountApi(c *configs.Tgr) *accountApi {
+	return &accountApi{
+		url: c.AuthApi,
+	}
+}
+
+func (a *accountApi) GetAccount(acc string) (accountProfile, error) {
+	resp := response{}
+	url := fmt.Sprintf("%v/v1/users/%v/profile", a.url, acc)
 	res, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return resp.Data, err
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		return resp.Data, err
 	}
 
-	var data any
-	err = json.Unmarshal(body, &data)
+	err = json.Unmarshal(body, &resp)
 	if err != nil {
-		return nil, err
+		return resp.Data, err
 	}
 
-	return data, err
+	return resp.Data, err
 }
