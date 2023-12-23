@@ -28,13 +28,13 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
 
-      - name: Install dependencies
-        run: go mod download
+      # - name: Install dependencies
+      #   run: go mod download
 
       - name: Build
-        run: go build -v ./...  
+        run: go build -v ./... -o ./out/goap
 
-      - name: Test with the Go CLI
+      - name: Test
         run: go test -v ./...
 
       - name: Docker Login
