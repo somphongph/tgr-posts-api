@@ -32,7 +32,7 @@ jobs:
         run: go mod download
 
       - name: Build
-        run: CGO_ENABLED=0 GOOS=linux go build -v ./... -o ./out/goapp ./  
+        run: go build -v ./...  
 
       - name: Test with the Go CLI
         run: go test
