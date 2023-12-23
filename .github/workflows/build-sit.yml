@@ -1,0 +1,94 @@
+name: Build SIT
+
+on:
+  push:
+    branches: [develop]
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  # ==============
+  # CI task
+  # ==============
+  gitops-ci:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.21.x' ]
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Install dependencies
+        run: go get .
+
+      - name: Build
+        run: CGO_ENABLED=0 GOOS=linux go build -o ./out/goapp ./
+
+      - name: Test with the Go CLI
+        run: go test
+
+      - name: Docker Login
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}
+          tags: |
+            type=sha
+
+      - name: Build & Push Docker images
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Setup SHA
+        run: echo "GITHUB_SHA=${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
+
+  # ==============
+  # CD task
+  # ==============
+  # gitops-cd:
+  #   runs-on: ubuntu-latest
+  #   needs: gitops-ci
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         repository: ktechinno/tgr-infra-dev
+  #         ref: ${{ github.repository }}
+  #         persist-credentials: false
+  #         fetch-depth: 0
+  #         token: ${{ secrets.PAT }}
+  #     - name: change image tag
+  #       run: |
+  #         git --version
+  #         git config user.name "cicd"
+  #         git config user.email "cicd@ktechinno.link"
+  #         sed -i -E "s/tag: .*/tag: sha-${GITHUB_SHA::7}/g" sit/helm/values.yaml 
+  #         git add sit/helm/values.yaml
+  #         git commit -m "sit: change version to sha-${GITHUB_SHA::7}"
+  #     - name: push changes
+  #       uses: ad-m/github-push-action@master
+  #       with:
+  #         github_token: ${{ secrets.PAT }}
+  #         repository: ktechinno/tgr-infra-dev
+  #         branch: ${{ github.repository }}

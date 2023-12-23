@@ -1,0 +1,84 @@
+name: Build Production
+
+on:
+  push:
+    # Pattern matched against refs/tags
+    tags:
+      - "v*" # Push events to every tag not containing /
+
+env:
+  REGISTRY: ghcr.io
+  TAG: ${{ github.ref_name }}
+
+jobs:
+  # ==============
+  # CI task
+  # ==============
+  gitops-ci:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "8.0.x" # SDK Version to use.
+
+      - name: Test with the dotnet CLI
+        run: dotnet test
+
+      - name: Publish
+        run: dotnet publish "API/API.csproj" -c Release -o ./app/out
+
+      - name: Docker Login
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}
+
+      - name: Build & Push Docker images
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  # ==============
+  # CD task
+  # ==============
+  gitops-cd:
+    runs-on: ubuntu-latest
+    needs: gitops-ci
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          repository: ktechinno/tgr-infra-prod
+          ref: ${{ github.repository }}
+          persist-credentials: false
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}
+      - name: change image tag
+        run: |
+          git --version
+          git config user.name "cicd"
+          git config user.email "cicd@ktechinno.link"
+          sed -i -E "s/tag: v.*/tag: ${{ env.TAG }}/g" prod/helm/values.yaml 
+          git add prod/helm/values.yaml
+          git commit -m "prod: change version to ${{ env.TAG }}"
+      - name: push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PAT }}
+          repository: ktechinno/tgr-infra-prod
+          branch: ${{ github.repository }}
