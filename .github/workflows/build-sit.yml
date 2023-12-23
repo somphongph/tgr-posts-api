@@ -32,7 +32,7 @@ jobs:
       #   run: go mod download
 
       - name: Build
-        run: go build -v ./... -o ./out/goap
+        run: go build -o ./out/goap -v ./... 
 
       - name: Test
         run: go test -v ./...
